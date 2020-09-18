@@ -125,28 +125,24 @@ proxy-groups:
       - 🎯 负载均衡
       - ♻ 自动选择
       - 🔰 延迟最低
-      - '气抖冷'
 
   - name: 🎯 负载均衡
     type: load-balance
     url: http://www.gstatic.com/generate_204
     interval: 300
     proxies:
-      - '气抖冷'
 
   - name: ♻ 自动选择
     type: fallback
     url: http://www.gstatic.com/generate_204
     interval: 300
     proxies:
-      - '气抖冷'
 
   - name: 🔰 延迟最低
     type: url-test
     url: http://www.gstatic.com/generate_204
     interval: 300
     proxies:
-      - '气抖冷'
 
 #  - name: ⛔ 广告拦截
 #    type: select
