@@ -1,4 +1,4 @@
-# v2toclash
+# v2ray-to-clash
 
 #### 说明 : 本脚本提供解析v2ray订阅链接为Clash配置文件的自动化,供学习交流使用.
 #### Robot.py中的参数 :
