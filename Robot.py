@@ -121,7 +121,7 @@ if __name__ == '__main__':
     # 输出路径
     output_path = './output.yaml'
     # 规则策略
-    config_url = ''
+    config_url = 'https://raw.githubusercontent.com/Celeter/v2toclash/master/config.yaml'
     config_path = './config.yaml'
 
     v2ray_proxy = get_proxies(v2ray_url)
