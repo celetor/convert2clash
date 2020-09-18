@@ -4,7 +4,6 @@ import base64
 import json
 import datetime
 import sys
-import os
 
 
 def log(msg):
@@ -55,7 +54,6 @@ def convert2clash(arr):
             'alterId': item.get('aid') if type(item.get('aid')) is int else item.get('alterId'),
             'cipher': item.get('type') if item.get('type') and item.get('type') != 'none' else 'auto',
             'udp': True,
-            # 'network': item['net'] if item['net'] and item['net'] != 'tcp' else None,
             'network': item.get('net') if item.get('net') else None,
             'tls': True if item.get('tls') == 'tls' else None,
             'ws-path': item.get('path'),
@@ -68,7 +66,7 @@ def convert2clash(arr):
         proxies['proxy_names'].append(obj['name'])
     return proxies
 
-
+# 获取本地规则策略的配置文件
 def load_local_config(path):
     try:
         f = open(path, 'r', encoding="utf-8")
@@ -85,7 +83,7 @@ def get_default_config(url, path):
     try:
         raw = requests.get(url, timeout=5000).content.decode('utf-8')
         template_config = yaml.load(raw, Loader=yaml.FullLoader)
-    except BaseException:
+    except requests.exceptions.RequestException:
         log('网络获取规则配置失败,加载本地配置文件')
         template_config = load_local_config(path)
     log('已获取规则配置文件')
