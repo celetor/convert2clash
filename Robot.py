@@ -45,7 +45,7 @@ def convert2clash(arr):
         'proxy_names': []
     }
     for item in arr:
-        if item.get('ps') is None or item.get('add') is None or item.get('port') is None or item.get('id') is None and item.get('aid') is None:
+        if item.get('ps') is None or item.get('add') is None or item.get('port') is None or item.get('id') is None or item.get('aid') is None:
             continue
         obj = {
             'name': item.get('ps'),
