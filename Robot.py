@@ -55,8 +55,7 @@ def convert2clash(arr):
             'uuid': item.get('id'),
             'alterId': item.get('aid'),
             'cipher': item.get('type') if item.get('type') and item.get('type') != 'none' else 'auto',
-            'udp': True,
-            'network': item.get('net') if item.get('net') else None,
+            'network': item.get('net'),
             'tls': True if item.get('tls') == 'tls' else None,
             'ws-path': item.get('path'),
             'ws-headers': {'Host': item.get('host')} if item.get('host') else None
