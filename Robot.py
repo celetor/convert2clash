@@ -54,7 +54,7 @@ def convert2clash(arr):
             'port': item.get('port'),
             'uuid': item.get('id'),
             'alterId': item.get('aid'),
-            'cipher': item.get('type') if item.get('type') and item.get('type') != 'none' else 'auto',
+            'cipher': 'auto',
             'network': item.get('net'),
             'tls': True if item.get('tls') == 'tls' else None,
             'ws-path': item.get('path'),
