@@ -95,7 +95,7 @@ def get_default_config(url, path):
 def add_proxies_to_model(data, model):
     model['proxies'] = data['proxy_list']
     for group in model['proxy-groups']:
-        if group['proxies'] is None:
+        if group.get('proxies') is None:
             group['proxies'] = data['proxy_names']
         else:
             group['proxies'].extend(data['proxy_names'])
