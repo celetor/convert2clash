@@ -66,6 +66,7 @@ def convert2clash(arr):
         proxies['proxy_names'].append(obj['name'])
     return proxies
 
+
 # 获取本地规则策略的配置文件
 def load_local_config(path):
     try:
