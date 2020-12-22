@@ -1,18 +1,13 @@
 # 说明 : 本脚本提供解析v2ray/ss/ssr/clashR/clashX订阅链接为Clash配置文件,仅供学习交流使用.
 # https://github.com/Celeter/convert2clash
-import requests
-import yaml
-import base64
-import json
-import datetime
-import sys
+import os, re, sys, json, base64, datetime
+import requests, yaml
 import urllib.parse
-import re
 
 
 def log(msg):
     time = datetime.datetime.now()
-    print('[' + time.strftime('%Y.%m.%d-%H:%M:%S') + ']:' + msg)
+    print('[' + time.strftime('%Y.%m.%d-%H:%M:%S') + '] ' + msg)
 
 
 # 保存到文件
@@ -34,6 +29,9 @@ def decode_v2ray_node(nodes):
     proxy_list = []
     for node in nodes:
         decode_proxy = node.decode('utf-8')[8:]
+        if not decode_proxy or decode_proxy.isspace():
+            log('vmess节点信息为空，跳过该节点')
+            continue
         proxy_str = base64.b64decode(decode_proxy).decode('utf-8')
         proxy_dict = json.loads(proxy_str)
         proxy_list.append(proxy_dict)
@@ -46,12 +44,12 @@ def decode_ss_node(nodes):
     for node in nodes:
         decode_proxy = node.decode('utf-8')[5:]
         if not decode_proxy or decode_proxy.isspace():
-            log('节点信息为空，跳过该节点')
+            log('ss节点信息为空，跳过该节点')
             continue
         info = dict()
         param = decode_proxy
         if param.find('#') > -1:
-            remark = urllib.parse.unquote(param[param.find('#')+1:])
+            remark = urllib.parse.unquote(param[param.find('#') + 1:])
             info['name'] = remark
             param = param[:param.find('#')]
         if param.find('/?') > -1:
@@ -92,6 +90,9 @@ def decode_ssr_node(nodes):
     proxy_list = []
     for node in nodes:
         decode_proxy = node.decode('utf-8')[6:]
+        if not decode_proxy or decode_proxy.isspace():
+            log('ssr节点信息为空，跳过该节点')
+            continue
         proxy_str = safe_decode(decode_proxy).decode('utf-8')
         parts = proxy_str.split(':')
         if len(parts) != 6:
@@ -130,12 +131,23 @@ def get_proxies(urls):
         try:
             raw = base64.b64decode(response)
         except Exception as r:
-            log('base64解码失败 {}'.format(r))
+            log('base64解码失败:{},应当为clash节点'.format(r))
             log('clash节点提取中...')
             yml = yaml.load(response, Loader=yaml.FullLoader)
             nodes_list = []
-            for node in yml.get('proxies'):
+            tmp_list = []
+            # clash新字段
+            if yml.get('proxies'):
+                tmp_list = yml.get('proxies')
+            # clash旧字段
+            elif yml.get('Proxy'):
+                tmp_list = yml.get('Proxy')
+            else:
+                log('clash节点提取失败,clash节点为空')
+                continue
+            for node in tmp_list:
                 node['name'] = node['name'].strip() if node.get('name') else None
+                # 对clashR的支持
                 if node.get('protocolparam'):
                     node['protocol-param'] = node['protocolparam']
                     del node['protocolparam']
@@ -151,19 +163,20 @@ def get_proxies(urls):
             continue
         nodes_list = raw.splitlines()
         clash_node = []
-        if nodes_list[0].startswith(b'vmess://'):
-            decode_proxy = decode_v2ray_node(nodes_list)
-            clash_node = v2ray_to_clash(decode_proxy)
-        elif nodes_list[0].startswith(b'ss://'):
-            decode_proxy = decode_ss_node(nodes_list)
-            clash_node = ss_to_clash(decode_proxy)
-        elif nodes_list[0].startswith(b'ssr://'):
-            decode_proxy = decode_ssr_node(nodes_list)
-            clash_node = ssr_to_clash(decode_proxy)
-        else:
-            pass
-        proxy_list['proxy_list'].extend(clash_node['proxy_list'])
-        proxy_list['proxy_names'].extend(clash_node['proxy_names'])
+        for node in nodes_list:
+            if node.startswith(b'vmess://'):
+                decode_proxy = decode_v2ray_node([node])
+                clash_node = v2ray_to_clash(decode_proxy)
+            elif node.startswith(b'ss://'):
+                decode_proxy = decode_ss_node([node])
+                clash_node = ss_to_clash(decode_proxy)
+            elif node.startswith(b'ssr://'):
+                decode_proxy = decode_ssr_node([node])
+                clash_node = ssr_to_clash(decode_proxy)
+            else:
+                pass
+            proxy_list['proxy_list'].extend(clash_node['proxy_list'])
+            proxy_list['proxy_names'].extend(clash_node['proxy_names'])
     log('共发现:{}个节点'.format(len(proxy_list['proxy_names'])))
     return proxy_list
 
@@ -266,6 +279,7 @@ def ssr_to_clash(arr):
     log('可用ssr节点{}个'.format(len(proxies['proxy_names'])))
     return proxies
 
+
 # 获取本地规则策略的配置文件
 def load_local_config(path):
     try:
@@ -308,7 +322,7 @@ def add_proxies_to_model(data, model):
 def save_config(path, data):
     config = yaml.dump(data, sort_keys=False, default_flow_style=False, encoding='utf-8', allow_unicode=True)
     save_to_file(path, config)
-    log('成功更新:{}个节点'.format(len(data['proxies'])))
+    log('成功更新{}个节点'.format(len(data['proxies'])))
 
 
 # 程序入口
@@ -318,9 +332,11 @@ if __name__ == '__main__':
     # 输出路径
     output_path = './output.yaml'
     # 规则策略
-    config_url = 'https://raw.githubusercontent.com/Celeter/v2toclash/master/config.yaml'
+    config_url = 'https://cdn.jsdelivr.net/gh/Celeter/convert2clash/config.yaml'
     config_path = './config.yaml'
 
+    if sub_url is None or sub_url == '':
+        sys.exit()
     node_list = get_proxies(sub_url)
     default_config = get_default_config(config_url, config_path)
     final_config = add_proxies_to_model(node_list, default_config)

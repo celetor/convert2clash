@@ -144,12 +144,12 @@ proxy-groups:
     interval: 300
     proxies:
 
-#  - name: ⛔ 广告拦截
-#    type: select
-#    proxies:
-#      - REJECT
-#      - DIRECT
-#      - 🚀 选择代理
+  - name: ⛔ 广告拦截
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+      - 🚀 选择代理
 
 
 rules:
@@ -331,33 +331,33 @@ rules:
   - DOMAIN-KEYWORD,whatsapp,🚀 选择代理
 
   # 常见广告域名屏蔽
-#  - DOMAIN-KEYWORD,admarvel,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,admaster,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,adsage,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,adsmogo,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,adsrvmedia,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,adwords,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,adservice,⛔ 广告拦截
-#  - DOMAIN-SUFFIX,appsflyer.com,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,domob,⛔ 广告拦截
-#  - DOMAIN-SUFFIX,doubleclick.net,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,duomeng,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,dwtrack,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,guanggao,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,lianmeng,⛔ 广告拦截
-#  - DOMAIN-SUFFIX,mmstat.com,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,mopub,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,omgmta,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,openx,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,partnerad,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,pingfore,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,supersonicads,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,uedas,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,umeng,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,usage,⛔ 广告拦截
-#  - DOMAIN-SUFFIX,vungle.com,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,wlmonitor,⛔ 广告拦截
-#  - DOMAIN-KEYWORD,zjtoolbar,⛔ 广告拦截
+  - DOMAIN-KEYWORD,admarvel,⛔ 广告拦截
+  - DOMAIN-KEYWORD,admaster,⛔ 广告拦截
+  - DOMAIN-KEYWORD,adsage,⛔ 广告拦截
+  - DOMAIN-KEYWORD,adsmogo,⛔ 广告拦截
+  - DOMAIN-KEYWORD,adsrvmedia,⛔ 广告拦截
+  - DOMAIN-KEYWORD,adwords,⛔ 广告拦截
+  - DOMAIN-KEYWORD,adservice,⛔ 广告拦截
+  - DOMAIN-SUFFIX,appsflyer.com,⛔ 广告拦截
+  - DOMAIN-KEYWORD,domob,⛔ 广告拦截
+  - DOMAIN-SUFFIX,doubleclick.net,⛔ 广告拦截
+  - DOMAIN-KEYWORD,duomeng,⛔ 广告拦截
+  - DOMAIN-KEYWORD,dwtrack,⛔ 广告拦截
+  - DOMAIN-KEYWORD,guanggao,⛔ 广告拦截
+  - DOMAIN-KEYWORD,lianmeng,⛔ 广告拦截
+  - DOMAIN-SUFFIX,mmstat.com,⛔ 广告拦截
+  - DOMAIN-KEYWORD,mopub,⛔ 广告拦截
+  - DOMAIN-KEYWORD,omgmta,⛔ 广告拦截
+  - DOMAIN-KEYWORD,openx,⛔ 广告拦截
+  - DOMAIN-KEYWORD,partnerad,⛔ 广告拦截
+  - DOMAIN-KEYWORD,pingfore,⛔ 广告拦截
+  - DOMAIN-KEYWORD,supersonicads,⛔ 广告拦截
+  - DOMAIN-KEYWORD,uedas,⛔ 广告拦截
+  - DOMAIN-KEYWORD,umeng,⛔ 广告拦截
+  - DOMAIN-KEYWORD,usage,⛔ 广告拦截
+  - DOMAIN-SUFFIX,vungle.com,⛔ 广告拦截
+  - DOMAIN-KEYWORD,wlmonitor,⛔ 广告拦截
+  - DOMAIN-KEYWORD,zjtoolbar,⛔ 广告拦截
 
   # 国外网站
   - DOMAIN-SUFFIX,9to5mac.com,🚀 选择代理
