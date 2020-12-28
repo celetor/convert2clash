@@ -9,4 +9,4 @@
 ##### 当config_url获取失败，使用config_path的策略。正常情况下只需修改sub_url即可食用。
 #### 使用说明:
      1. 先执行pip install -r requirements.txt
-     2. 再运行Robot.py 
+     2. 再执行python Robot.py 
