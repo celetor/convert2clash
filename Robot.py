@@ -332,7 +332,7 @@ if __name__ == '__main__':
     # 输出路径
     output_path = './output.yaml'
     # 规则策略
-    config_url = 'https://cdn.jsdelivr.net/gh/Celeter/convert2clash/config.yaml'
+    config_url = 'https://cdn.jsdelivr.net/gh/Celeter/convert2clash@master/config.yaml'
     config_path = './config.yaml'
 
     if sub_url is None or sub_url == '':
