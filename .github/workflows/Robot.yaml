@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout Script
         uses: actions/checkout@v2
@@ -24,6 +24,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Set Env
+        shell: bash
         run: |
           time="$(date -u -d '+8 hour' '+%Y.%m%d.%H')"
           fileName="Robot_${time}"
@@ -32,6 +33,7 @@ jobs:
           echo "APP_FILE=$file" >> $GITHUB_ENV
 
       - name: Build
+        shell: bash
         run: pyinstaller --onefile Robot.py -n $APP_FILE
 
       - name: Create Release
