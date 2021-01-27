@@ -25,7 +25,7 @@ jobs:
 
       - name: Set Env
         run: |
-          time="$(date -u -d '+8 hour' '+%Y_%m_%d')"
+          time="$(date -u -d '+8 hour' '+%Y.%m%d.%H')"
           fileName="Robot_${time}"
           file="${fileName}.exe"
           echo "APP_NAME=$fileName" >> $GITHUB_ENV
