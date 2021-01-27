@@ -29,7 +29,7 @@ jobs:
           time="$(date -u -d '+8 hour' '+%Y.%m.%d')"
           version="v${time}"
           file="Robot_${version}.exe"
-          echo "APP_VER=version" >> $GITHUB_ENV
+          echo "APP_VER=$version" >> $GITHUB_ENV
           echo "APP_FILE=$file" >> $GITHUB_ENV
 
       - name: Build
