@@ -1,0 +1,57 @@
+name: Release Script
+
+on:
+#   schedule:
+#     - cron: '18 0-16 * * *'
+  watch:
+    types: [ started ]
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Script
+        uses: actions/checkout@v2
+
+      - name: Python3 Install
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Requirements Install
+        run: pip install -r requirements.txt
+
+      - name: Set Env
+        run: |
+          time="$(date -u -d '+8 hour' '+%Y_%m_%d')"
+          fileName="Robot_${time}"
+          file="${time}.exe"
+          echo "APP_NAME=$fileName" >> $GITHUB_ENV
+          echo "APP_FILE=$file" >> $GITHUB_ENV
+
+      - name: Build
+        run: pyinstaller --onefile Robot.py -n $APP_FILE
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.APP_NAME }}
+          release_name: ${{ env.APP_NAME }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/dist/${{ env.APP_FILE }}
+          asset_name: ${{ env.APP_FILE }}
+          asset_content_type: application/vnd.android.package-archive
