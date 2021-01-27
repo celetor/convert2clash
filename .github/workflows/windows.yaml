@@ -1,4 +1,4 @@
-name: Release Script
+name: Windows APP
 
 on:
 #   schedule:
