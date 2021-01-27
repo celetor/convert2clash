@@ -3,8 +3,6 @@ name: Release Script
 on:
 #   schedule:
 #     - cron: '18 0-16 * * *'
-  watch:
-    types: [ started ]
   push:
     branches: [ master ]
 
@@ -21,7 +19,9 @@ jobs:
           python-version: 3.x
 
       - name: Requirements Install
-        run: pip install -r requirements.txt
+        run: |
+          pip install pyinstaller
+          pip install -r requirements.txt
 
       - name: Set Env
         shell: bash
