@@ -12,4 +12,4 @@
      1. 先执行pip install -r requirements.txt
      2. 再执行python Robot.py 
 #### 使用说明②:
- * 从[Release](https://github.com/Celeter/convert2clash/releases)下载可执行程序，直接运行
+ * 从[Release](https://github.com/Celeter/convert2clash/releases/latest)下载可执行程序，直接运行

@@ -26,10 +26,10 @@ jobs:
       - name: Set Env
         shell: bash
         run: |
-          time="$(date -u -d '+8 hour' '+%Y.%m%d.%H')"
-          fileName="Robot_${time}"
-          file="${fileName}.exe"
-          echo "APP_NAME=$fileName" >> $GITHUB_ENV
+          time="$(date -u -d '+8 hour' '+%Y.%m.%d')"
+          version="v${time}"
+          file="Robot_${version}.exe"
+          echo "APP_VER=version" >> $GITHUB_ENV
           echo "APP_FILE=$file" >> $GITHUB_ENV
 
       - name: Build
@@ -42,8 +42,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.APP_NAME }}
-          release_name: ${{ env.APP_NAME }}
+          tag_name: ${{ env.APP_VER }}
+          release_name: ${{ env.APP_VER }}
           draft: false
           prerelease: false
 
