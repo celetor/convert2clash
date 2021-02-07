@@ -4,7 +4,7 @@ on:
 #   schedule:
 #     - cron: '18 0-16 * * *'
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:

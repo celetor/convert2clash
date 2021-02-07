@@ -1,3 +1,6 @@
-/.idea/
-/venv
+.idea/
+build/
+dist/
+*.spec
+venv
 output.yaml
