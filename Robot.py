@@ -115,72 +115,6 @@ def decode_ssr_node(nodes):
     return proxy_list
 
 
-# 获取订阅地址数据:
-def get_proxies(urls):
-    url_list = urls.split(';')
-    headers = {
-        'User-Agent': 'Rule2Clash'
-    }
-    proxy_list = {
-        'proxy_list': [],
-        'proxy_names': []
-    }
-    # 请求订阅地址
-    for url in url_list:
-        response = requests.get(url, headers=headers, timeout=5000).text
-        try:
-            raw = base64.b64decode(response)
-        except Exception as r:
-            log('base64解码失败:{},应当为clash节点'.format(r))
-            log('clash节点提取中...')
-            yml = yaml.load(response, Loader=yaml.FullLoader)
-            nodes_list = []
-            tmp_list = []
-            # clash新字段
-            if yml.get('proxies'):
-                tmp_list = yml.get('proxies')
-            # clash旧字段
-            elif yml.get('Proxy'):
-                tmp_list = yml.get('Proxy')
-            else:
-                log('clash节点提取失败,clash节点为空')
-                continue
-            for node in tmp_list:
-                node['name'] = node['name'].strip() if node.get('name') else None
-                # 对clashR的支持
-                if node.get('protocolparam'):
-                    node['protocol-param'] = node['protocolparam']
-                    del node['protocolparam']
-                if node.get('obfsparam'):
-                    node['obfs-param'] = node['obfsparam']
-                    del node['obfsparam']
-                node['udp'] = True
-                nodes_list.append(node)
-            node_names = [node.get('name') for node in nodes_list]
-            log('可用clash节点{}个'.format(len(node_names)))
-            proxy_list['proxy_list'].extend(nodes_list)
-            proxy_list['proxy_names'].extend(node_names)
-            continue
-        nodes_list = raw.splitlines()
-        clash_node = []
-        for node in nodes_list:
-            if node.startswith(b'vmess://'):
-                decode_proxy = decode_v2ray_node([node])
-                clash_node = v2ray_to_clash(decode_proxy)
-            elif node.startswith(b'ss://'):
-                decode_proxy = decode_ss_node([node])
-                clash_node = ss_to_clash(decode_proxy)
-            elif node.startswith(b'ssr://'):
-                decode_proxy = decode_ssr_node([node])
-                clash_node = ssr_to_clash(decode_proxy)
-            else:
-                pass
-            proxy_list['proxy_list'].extend(clash_node['proxy_list'])
-            proxy_list['proxy_names'].extend(clash_node['proxy_names'])
-    log('共发现:{}个节点'.format(len(proxy_list['proxy_names'])))
-    return proxy_list
-
-
 # v2ray转换成Clash节点
 def v2ray_to_clash(arr):
     log('v2ray节点转换中...')
@@ -210,7 +144,7 @@ def v2ray_to_clash(arr):
         for key in list(obj.keys()):
             if obj.get(key) is None:
                 del obj[key]
-        if obj.get('alterId') is not None:
+        if obj.get('alterId') is not None and not obj['name'].startswith('剩余流量') and not obj['name'].startswith('过期时间'):
             proxies['proxy_list'].append(obj)
             proxies['proxy_names'].append(obj['name'])
     log('可用v2ray节点{}个'.format(len(proxies['proxy_names'])))
@@ -242,8 +176,9 @@ def ss_to_clash(arr):
         for key in list(obj.keys()):
             if obj.get(key) is None:
                 del obj[key]
-        proxies['proxy_list'].append(obj)
-        proxies['proxy_names'].append(obj['name'])
+        if not obj['name'].startswith('剩余流量') and not obj['name'].startswith('过期时间'):
+            proxies['proxy_list'].append(obj)
+            proxies['proxy_names'].append(obj['name'])
     log('可用ss节点{}个'.format(len(proxies['proxy_names'])))
     return proxies
 
@@ -278,6 +213,82 @@ def ssr_to_clash(arr):
                 proxies['proxy_names'].append(obj['name'])
     log('可用ssr节点{}个'.format(len(proxies['proxy_names'])))
     return proxies
+
+
+# 获取订阅地址数据:
+def get_proxies(urls):
+    url_list = urls.split(';')
+    headers = {
+        'User-Agent': 'Clash For Python'
+    }
+    proxy_list = {
+        'proxy_list': [],
+        'proxy_names': []
+    }
+    # 请求订阅地址
+    for url in url_list:
+        print(url)
+        response = requests.get(url, headers=headers, timeout=9000).text
+        try:
+            raw = base64.b64decode(response)
+        except Exception as r:
+            log('base64解码失败:{},应当为clash节点'.format(r))
+            log('clash节点提取中...')
+            yml = yaml.load(response, Loader=yaml.FullLoader)
+            nodes_list = []
+            tmp_list = []
+            # clash新字段
+            if yml.get('proxies'):
+                tmp_list = yml.get('proxies')
+            # clash旧字段
+            elif yml.get('Proxy'):
+                tmp_list = yml.get('Proxy')
+            else:
+                log('clash节点提取失败,clash节点为空')
+                continue
+            for node in tmp_list:
+                node['name'] = node['name'].strip() if node.get('name') else None
+                # 对clashR的支持
+                if node.get('protocolparam'):
+                    node['protocol-param'] = node['protocolparam']
+                    del node['protocolparam']
+                if node.get('obfsparam'):
+                    node['obfs-param'] = node['obfsparam']
+                    del node['obfsparam']
+                node['udp'] = True
+                nodes_list.append(node)
+            node_names = [node.get('name') for node in nodes_list]
+            log('可用clash节点{}个'.format(len(node_names)))
+            proxy_list['proxy_list'].extend(nodes_list)
+            proxy_list['proxy_names'].extend(node_names)
+            continue
+        nodes_list = raw.splitlines()
+        v2ray_urls = []
+        ss_urls = []
+        ssr_urls = []
+        for node in nodes_list:
+            if node.startswith(b'vmess://'):
+                v2ray_urls.append(node)
+            elif node.startswith(b'ss://'):
+                ss_urls.append(node)
+            elif node.startswith(b'ssr://'):
+                ssr_urls.append(node)
+            else:
+                pass
+        clash_node = []
+        if len(v2ray_urls) > 0:
+            decode_proxy = decode_v2ray_node(v2ray_urls)
+            clash_node = v2ray_to_clash(decode_proxy)
+        if len(ss_urls) > 0:
+            decode_proxy = decode_ss_node(ss_urls)
+            clash_node = ss_to_clash(decode_proxy)
+        if len(ssr_urls) > 0:
+            decode_proxy = decode_ssr_node(ssr_urls)
+            clash_node = ssr_to_clash(decode_proxy)
+        proxy_list['proxy_list'].extend(clash_node['proxy_list'])
+        proxy_list['proxy_names'].extend(clash_node['proxy_names'])
+    log('共发现:{}个节点'.format(len(proxy_list['proxy_names'])))
+    return proxy_list
 
 
 # 获取本地规则策略的配置文件
